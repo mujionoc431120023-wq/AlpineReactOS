@@ -1,0 +1,11 @@
+.git/
+build/output/
+node_modules/
+*.log
+.DS_Store
+__pycache__/
+*.pyc
+.env
+.vscode/
+.idea/
+dist/

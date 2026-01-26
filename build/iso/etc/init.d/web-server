@@ -1,0 +1,10 @@
+#!/sbin/openrc-run
+
+description="GeminiOS Web Server"
+command="/usr/sbin/lighttpd"
+command_args="-D -f /etc/lighttpd/lighttpd.conf"
+pidfile="/var/run/lighttpd.pid"
+
+depend() {
+    need net
+}
