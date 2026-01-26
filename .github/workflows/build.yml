@@ -1,0 +1,59 @@
+name: Build ISO
+
+on:
+  push:
+    branches: [ build-system, main ]
+  pull_request:
+    branches: [ build-system, main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: 'app/package-lock.json'
+    
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y xorriso qemu-system-x86
+    
+    - name: Run setup
+      run: bash ./setup.sh
+    
+    - name: Build ISO
+      run: ./quick-build.sh build
+      timeout-minutes: 30
+    
+    - name: Generate checksum
+      run: |
+        cd build/output
+        sha256sum AlpineReactOS.iso > checksum.txt
+        cat checksum.txt
+    
+    - name: Upload ISO artifact
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: AlpineReactOS-ISO
+        path: build/output/AlpineReactOS.iso*
+        retention-days: 30
+    
+    - name: Test ISO
+      run: ./quick-build.sh test
+      continue-on-error: true
+    
+    - name: Generate build report
+      if: always()
+      run: |
+        echo "## Build Report" >> $GITHUB_STEP_SUMMARY
+        echo "- **Status**: $([ -f build/output/AlpineReactOS.iso ] && echo '✅ Success' || echo '❌ Failed')" >> $GITHUB_STEP_SUMMARY
+        echo "- **ISO Size**: $(du -h build/output/AlpineReactOS.iso 2>/dev/null | cut -f1 || echo 'N/A')" >> $GITHUB_STEP_SUMMARY
+        echo "- **Timestamp**: $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> $GITHUB_STEP_SUMMARY
