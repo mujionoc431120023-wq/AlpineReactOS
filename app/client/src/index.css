@@ -1,0 +1,139 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+
+  --card: 240 10% 3.9%;
+  --card-foreground: 0 0% 98%;
+
+  --popover: 240 10% 3.9%;
+  --popover-foreground: 0 0% 98%;
+
+  --primary: 180 100% 50%; /* Cyan for Cyberpunk feel */
+  --primary-foreground: 240 5.9% 10%;
+
+  --secondary: 240 3.7% 15.9%;
+  --secondary-foreground: 0 0% 98%;
+
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+
+  --accent: 240 3.7% 15.9%;
+  --accent-foreground: 0 0% 98%;
+
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+
+  --border: 240 3.7% 15.9%;
+  --input: 240 3.7% 15.9%;
+  --ring: 180 100% 50%;
+
+  --radius: 0.5rem;
+
+  --font-sans: 'Inter', sans-serif;
+  --font-mono: 'Fira Code', monospace;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans overflow-hidden;
+  }
+  
+  /* Custom Scrollbar for Terminal/Windows */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-muted-foreground/30 rounded-full hover:bg-muted-foreground/50 transition-colors;
+  }
+}
+
+@layer components {
+  .glass-panel {
+    @apply bg-black/60 backdrop-blur-md border border-white/10 shadow-xl;
+  }
+  
+  .terminal-text {
+    @apply font-mono text-sm leading-relaxed;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+  }
+
+  .desktop-icon-label {
+    @apply text-white text-xs text-center mt-1 px-1 py-0.5 rounded-sm bg-black/50 backdrop-blur-sm truncate max-w-[80px];
+    text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+  }
+}
+
+/* CRT Scanline effect overlay */
+.scanlines::before {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  z-index: 9999;
+  background-size: 100% 2px, 3px 100%;
+  pointer-events: none;
+  opacity: 0.15;
+}
+
+/* Touch Mode Styles */
+[data-input-mode="touch"] {
+  /* Larger touch targets */
+  --touch-target-min: 48px;
+}
+
+[data-input-mode="touch"] button,
+[data-input-mode="touch"] [role="button"],
+[data-input-mode="touch"] .clickable {
+  min-height: var(--touch-target-min);
+  min-width: var(--touch-target-min);
+}
+
+[data-input-mode="touch"] .desktop-icon-label {
+  @apply text-sm py-1;
+}
+
+/* Mouse Mode - Enable hover effects */
+[data-input-mode="mouse"] .hover-effect:hover {
+  @apply bg-white/10;
+}
+
+/* Touch Mode - Disable hover, add active states */
+[data-input-mode="touch"] .hover-effect:hover {
+  background: transparent;
+}
+
+[data-input-mode="touch"] .hover-effect:active {
+  @apply bg-white/20;
+}
+
+/* Touch-friendly scrolling */
+[data-input-mode="touch"] .scroll-container {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* Visible drag handles in touch mode */
+[data-input-mode="touch"] .drag-handle {
+  @apply opacity-100;
+}
+
+[data-input-mode="mouse"] .drag-handle {
+  @apply opacity-0 hover:opacity-100 transition-opacity;
+}

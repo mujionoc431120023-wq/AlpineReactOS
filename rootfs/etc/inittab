@@ -1,0 +1,5 @@
+::sysinit:/sbin/openrc sysinit
+::wait:/sbin/openrc
+::respawn:/sbin/agetty 0 tty1
+::ctrlaltdel:/sbin/openrc reboot
+::shutdown:/sbin/openrc shutdown
